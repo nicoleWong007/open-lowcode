@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "include": ["src"],
+  "references": [
+    { "path": "../../packages/shared" },
+    { "path": "../../packages/engine" },
+    { "path": "../../packages/renderer" },
+    { "path": "../../packages/components" },
+    { "path": "../../packages/editor" }
+  ]
+}
