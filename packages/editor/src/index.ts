@@ -9,4 +9,6 @@ export { EventPanel } from './panels/EventPanel';
 export { BindingPanel } from './panels/BindingPanel';
 export { VariablePanel } from './panels/VariablePanel';
 export { Toolbar } from './toolbar/Toolbar';
+export { ExportModal } from './export/ExportModal';
+export { useCodeExport } from './export/useCodeExport';
 export { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';

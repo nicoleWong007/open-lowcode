@@ -6,6 +6,7 @@ import {
   MobileOutlined,
   EyeOutlined,
   EditOutlined,
+  CodeOutlined,
 } from '@ant-design/icons';
 import type { EditorStoreHook } from '@open-lowcode/engine';
 
@@ -14,9 +15,10 @@ interface ToolbarProps {
   onImport: () => void;
   onExport: () => void;
   onSave: () => void;
+  onExportReact: () => void;
 }
 
-export const Toolbar: React.FC<ToolbarProps> = ({ store, onImport, onExport, onSave }) => {
+export const Toolbar: React.FC<ToolbarProps> = ({ store, onImport, onExport, onSave, onExportReact }) => {
   const canUndo = store((s) => s.past.length > 0);
   const canRedo = store((s) => s.future.length > 0);
   const canvasMode = store((s) => s.canvasMode);
@@ -71,7 +73,8 @@ export const Toolbar: React.FC<ToolbarProps> = ({ store, onImport, onExport, onS
 
       <Space>
         <Button size="small" onClick={onImport}>导入</Button>
-        <Button size="small" onClick={onExport}>导出</Button>
+        <Button size="small" onClick={onExport}>导出JSON</Button>
+        <Button size="small" icon={<CodeOutlined />} onClick={onExportReact}>导出代码</Button>
         <Button size="small" type="primary" onClick={onSave}>保存</Button>
       </Space>
     </div>

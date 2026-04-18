@@ -13,6 +13,8 @@ import { VariablePanel } from './panels/VariablePanel';
 import { Toolbar } from './toolbar/Toolbar';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { useAutoSave, loadFromLocalStorage, saveToLocalStorage } from './hooks/useAutoSave';
+import { useCodeExport } from './export/useCodeExport';
+import { ExportModal } from './export/ExportModal';
 
 interface EditorProps {
   registry: ComponentRegistry;
@@ -22,6 +24,7 @@ interface EditorProps {
 export const Editor: React.FC<EditorProps> = ({ registry, store }) => {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeDragData, setActiveDragData] = useState<{ type: string; fromPalette?: boolean } | null>(null);
+  const [exportModalOpen, setExportModalOpen] = useState(false);
   const canvasMode = store((s) => s.canvasMode);
   const viewport = store((s) => s.viewport);
   const document = store((s) => s.document);
@@ -31,6 +34,8 @@ export const Editor: React.FC<EditorProps> = ({ registry, store }) => {
 
   useKeyboardShortcuts(store, registry);
   useAutoSave(store);
+
+  const { files: exportFiles, componentName: exportComponentName } = useCodeExport(document);
 
   const hasLoadedRef = useRef(false);
   if (!hasLoadedRef.current) {
@@ -158,7 +163,7 @@ export const Editor: React.FC<EditorProps> = ({ registry, store }) => {
       onDragEnd={handleDragEnd}
     >
       <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
-        <Toolbar store={store} onImport={handleImport} onExport={handleExport} onSave={handleSave} />
+        <Toolbar store={store} onImport={handleImport} onExport={handleExport} onSave={handleSave} onExportReact={() => setExportModalOpen(true)} />
         <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
           {canvasMode === 'design' && (
             <div style={{ width: 240, height: '100%', borderRight: '1px solid #f0f0f0', backgroundColor: '#fff', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -190,6 +195,12 @@ export const Editor: React.FC<EditorProps> = ({ registry, store }) => {
           </div>
         )}
       </DragOverlay>
+      <ExportModal
+        open={exportModalOpen}
+        onClose={() => setExportModalOpen(false)}
+        files={exportFiles}
+        componentName={exportComponentName}
+      />
     </DndContext>
   );
 };
