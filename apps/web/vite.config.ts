@@ -7,6 +7,9 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  define: {
+    'process.env.BABEL_TYPES_8_BREAKING': 'false',
+  },
   server: {
     port: 3000,
   },
