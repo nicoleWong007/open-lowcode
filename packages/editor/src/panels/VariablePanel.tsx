@@ -17,7 +17,7 @@ export const VariablePanel: React.FC<VariablePanelProps> = ({ store }) => {
   return (
     <div style={{ padding: '12px 16px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-        <span style={{ fontSize: 14, fontWeight: 600 }}>变量</span>
+        <span style={{ fontSize: 12, fontWeight: 500 }}>变量</span>
         <Button
           size="small"
           type="dashed"

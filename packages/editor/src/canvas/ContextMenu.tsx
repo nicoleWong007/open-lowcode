@@ -109,7 +109,10 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({ store, registry, child
 
   return (
     <Dropdown
-      menu={{ items: buildMenuItems() }}
+      menu={{
+        items: buildMenuItems(),
+        style: { minWidth: 120, fontSize: 12 },
+      }}
       trigger={['contextMenu']}
     >
       {children}

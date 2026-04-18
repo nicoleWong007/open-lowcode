@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { AppstoreOutlined, UnorderedListOutlined, CodeOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { ComponentRegistry, findNode, findParent } from '@open-lowcode/engine';
 import type { EditorStoreHook, DocumentSchema } from '@open-lowcode/engine';
 import { Canvas } from './canvas/Canvas';
@@ -25,6 +26,7 @@ export const Editor: React.FC<EditorProps> = ({ registry, store }) => {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeDragData, setActiveDragData] = useState<{ type: string; fromPalette?: boolean } | null>(null);
   const [exportModalOpen, setExportModalOpen] = useState(false);
+  const [leftCollapsed, setLeftCollapsed] = useState(false);
   const canvasMode = store((s) => s.canvasMode);
   const viewport = store((s) => s.viewport);
   const document = store((s) => s.document);
@@ -166,17 +168,56 @@ export const Editor: React.FC<EditorProps> = ({ registry, store }) => {
         <Toolbar store={store} onImport={handleImport} onExport={handleExport} onSave={handleSave} onExportReact={() => setExportModalOpen(true)} />
         <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
           {canvasMode === 'design' && (
-            <div style={{ width: 240, height: '100%', borderRight: '1px solid #f0f0f0', backgroundColor: '#fff', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-              <div style={{ flex: 1, overflowY: 'auto' }}>
-                <SidebarSection title="组件" defaultOpen>
-                  <ComponentPalette registry={registry} />
-                </SidebarSection>
-                <SidebarSection title="图层" defaultOpen>
-                  <LayersPanel store={store} registry={registry} />
-                </SidebarSection>
-                <SidebarSection title="变量" defaultOpen={false}>
-                  <VariablePanel store={store} />
-                </SidebarSection>
+            <div style={{
+              width: leftCollapsed ? 48 : 240,
+              height: '100%',
+              borderRight: '1px solid #f0f0f0',
+              backgroundColor: '#fff',
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden',
+              transition: 'width 0.2s ease',
+            }}>
+              {leftCollapsed ? (
+                <div style={{
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  paddingTop: 8,
+                  gap: 4,
+                }}>
+                  <SidebarIcon icon={<AppstoreOutlined />} title="组件" onClick={() => setLeftCollapsed(false)} />
+                  <SidebarIcon icon={<UnorderedListOutlined />} title="图层" onClick={() => setLeftCollapsed(false)} />
+                  <SidebarIcon icon={<CodeOutlined />} title="变量" onClick={() => setLeftCollapsed(false)} />
+                </div>
+              ) : (
+                <div style={{ flex: 1, overflowY: 'auto' }}>
+                  <SidebarSection title="组件" defaultOpen>
+                    <ComponentPalette registry={registry} />
+                  </SidebarSection>
+                  <SidebarSection title="图层" defaultOpen>
+                    <LayersPanel store={store} registry={registry} />
+                  </SidebarSection>
+                  <SidebarSection title="变量" defaultOpen={false}>
+                    <VariablePanel store={store} />
+                  </SidebarSection>
+                </div>
+              )}
+              <div
+                onClick={() => setLeftCollapsed(!leftCollapsed)}
+                style={{
+                  padding: '8px 0',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  borderTop: '1px solid #f0f0f0',
+                  fontSize: 12,
+                  color: '#8c8c8c',
+                  userSelect: 'none',
+                }}
+                title={leftCollapsed ? '展开侧栏' : '收起侧栏'}
+              >
+                {leftCollapsed ? <RightOutlined /> : <LeftOutlined />}
               </div>
             </div>
           )}
@@ -204,6 +245,29 @@ export const Editor: React.FC<EditorProps> = ({ registry, store }) => {
     </DndContext>
   );
 };
+
+const SidebarIcon: React.FC<{ icon: React.ReactNode; title: string; onClick: () => void }> = ({ icon, title, onClick }) => (
+  <div
+    onClick={onClick}
+    title={title}
+    style={{
+      width: 36,
+      height: 36,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 6,
+      cursor: 'pointer',
+      fontSize: 16,
+      color: '#666',
+      transition: 'background-color 0.15s',
+    }}
+    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#f0f0f0'; }}
+    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+  >
+    {icon}
+  </div>
+);
 
 const SettingsPanel: React.FC<{ registry: ComponentRegistry; store: EditorStoreHook }> = ({ registry, store }) => {
   const [activeTab, setActiveTab] = useState<'props' | 'style' | 'events' | 'bindings'>('props');
