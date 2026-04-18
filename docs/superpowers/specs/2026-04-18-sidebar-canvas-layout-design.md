@@ -17,7 +17,7 @@
 - 新增 `leftCollapsed` 状态（`boolean`），默认 `false`
 - 展开宽度 240px，折叠宽度 48px，`transition: width 0.2s ease` 平滑过渡
 - 折叠时面板内只显示图标列（组件、图层、变量各一个图标），无文字
-- 面板底部或顶部有 toggle 按钮（`◀` / `▶`）
+- 面板底部有 toggle 按钮（`◀` / `▶`），点击切换折叠/展开
 
 ### 文件：`packages/editor/src/Editor.tsx`
 
@@ -132,8 +132,8 @@ const iconMap: Record<string, React.ComponentType> = {
   LinkOutlined: Icons.LinkOutlined,
   BorderOutlined: Icons.BorderOutlined,
   CreditCardOutlined: Icons.CreditCardOutlined,
-  AppstoreOutlined: Icons.AppstoreOutlined,
-  TabsOutlined: Icons.TabsOutlined,
+  // Note: Grid 组件也使用 AppstoreOutlined，与 Button 相同（注册时即如此）
+  TabsOutlined: Icons.TagOutlined, // TabsOutlined 在 @ant-design/icons 中不存在，fallback 到 TagOutlined
   FormOutlined: Icons.FormOutlined,
   DownCircleOutlined: Icons.DownCircleOutlined,
   CheckSquareOutlined: Icons.CheckSquareOutlined,
